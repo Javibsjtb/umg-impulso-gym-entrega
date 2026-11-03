@@ -1,0 +1,13 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+<g id="Frame 46" clip-path="url(#clip0_0_4)">
+<circle id="Ellipse 5" cx="10" cy="10" r="10" fill="#FAFAFA"/>
+<g id="tick-02">
+<path id="Vector" d="M6.4988 11L7.70599 12.2072C8.00371 12.505 8.48812 12.4993 8.77884 12.1948L13.4988 7.25004" stroke="#212121" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+</g>
+<defs>
+<clipPath id="clip0_0_4">
+<rect width="20" height="20" fill="white"/>
+</clipPath>
+</defs>
+</svg>

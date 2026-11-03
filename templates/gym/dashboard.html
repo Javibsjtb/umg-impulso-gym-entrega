@@ -1,0 +1,44 @@
+{% extends 'base.html' %}{% load gym_tags static %}{% block breadcrumb %}Vista general{% endblock %}{% block content %}
+<div class="page-heading">
+  <div><span class="eyebrow">{{ today|date:"l, d \d\e F" }}</span><h1>Un buen día para avanzar<span class="lime">.</span></h1><p>Así se mueve tu gimnasio hoy.</p></div>
+  <a class="button primary" href="{% url 'member_create' %}">{% icon 'plus' %} Nuevo socio</a>
+</div>
+
+<section class="admin-fitness-banner">
+  <div><span class="eyebrow">Fuerza. Constancia. Progreso.</span><h2>Que nada detenga <br>el próximo entrenamiento.</h2><a href="{% url 'attendance' %}" class="button primary">{% icon 'checkin' %} Registrar asistencia</a></div>
+  <img src="{% static 'gym/figma/4663d.png' %}" alt="">
+</section>
+
+<div class="stats-grid">
+  <article class="stat"><div class="stat-label">Socios con acceso <span class="stat-icon">{% icon 'members' %}</span></div><div class="stat-value">{{ active_members }}<small>socios</small></div><span class="stat-note"><span class="live-dot"></span> Membresía vigente y pagada</span></article>
+  <article class="stat"><div class="stat-label">Ingresos del mes <span class="stat-icon">{% icon 'payments' %}</span></div><div class="stat-value money">{{ income|money }}</div><span class="stat-note">Cobros registrados, sin anulaciones</span></article>
+  <article class="stat"><div class="stat-label">Asistencias hoy <span class="stat-icon">{% icon 'checkin' %}</span></div><div class="stat-value">{{ today_attendance }}<small>entradas</small></div><span class="stat-note">Una asistencia por socio al día</span></article>
+  <a class="stat accent" href="{% url 'memberships' %}?status=expiring"><div class="stat-label">Por vencer <span class="stat-icon">{% icon 'clock' %}</span></div><div class="stat-value">{{ expiring_count }}<small>membresías</small></div><span class="stat-note">En los próximos 7 días {% icon 'arrow-right' %}</span></a>
+</div>
+
+<div class="dashboard-grid">
+  <section class="card chart-card">
+    <div class="card-heading"><div><h2>El ritmo de la semana</h2><p>Asistencias de los últimos 7 días</p></div><span class="badge muted">Actividad diaria</span></div>
+    <svg class="chart" viewBox="0 0 555 200" role="img" aria-label="Asistencias diarias durante los últimos siete días"><line x1="20" x2="535" y1="155" y2="155" class="chart-grid"/><line x1="20" x2="535" y1="95" y2="95" class="chart-grid"/><line x1="20" x2="535" y1="35" y2="35" class="chart-grid"/>{% for day in days %}<rect x="{{ day.x }}" y="{{ day.y }}" width="40" height="{{ day.height }}" rx="6" class="chart-bar {% if day.today %}today{% endif %}"><title>{{ day.label }}: {{ day.count }} asistencias</title></rect><text x="{{ day.x|add:20 }}" y="185" text-anchor="middle" {% if day.today %}class="chart-today"{% endif %}>{% if day.today %}Hoy{% else %}{{ day.label }}{% endif %}</text><text x="{{ day.x|add:20 }}" y="{{ day.y|add:-9 }}" text-anchor="middle" class="chart-value">{{ day.count }}</text>{% endfor %}</svg>
+    <div class="chart-footer"><span><span class="legend-dot"></span> Asistencias registradas</span><a href="{% url 'attendance' %}">Ver asistencia {% icon 'arrow-right' %}</a></div>
+  </section>
+  <section class="checkin-cta">
+    <span class="eyebrow">Recepción ágil</span>
+    <h2>Su próximo entrenamiento empieza aquí.</h2>
+    <p>Valida la membresía y registra una entrada en segundos.</p>
+    <ol class="cta-steps"><li><span>1</span> Escribe el código del socio</li><li><span>2</span> El sistema valida vigencia y pago</li><li><span>3</span> La entrada queda registrada</li></ol>
+    <a href="{% url 'attendance' %}" class="button lime-button">Registrar asistencia {% icon 'arrow-right' %}</a>
+  </section>
+</div>
+
+<div class="dashboard-grid lower">
+  <section class="card">
+    <div class="card-heading"><div><h2>Renovaciones a la vista</h2><p>Anticípate al próximo vencimiento</p></div><a href="{% url 'memberships' %}?status=expiring" class="text-link">Ver todas {% icon 'arrow-right' %}</a></div>
+    <div class="table-wrap"><table class="stack"><thead><tr><th>Socio</th><th>Plan</th><th>Vence</th><th><span class="sr-only">Acción</span></th></tr></thead><tbody>{% for item in expiring %}<tr><td data-label="Socio"><a class="person" href="{% url 'member_detail' item.member_id %}"><span class="avatar">{{ item.member.initials }}</span><span>{{ item.member }}<small>{{ item.member.code }}</small></span></a></td><td data-label="Plan">{{ item.plan.name }}</td><td data-label="Vence"><span class="badge amber">{{ item.end_date|date:'d M' }}</span></td><td class="row-action"><a class="text-link" href="{% url 'membership_create' %}?member={{ item.member_id }}">Renovar {% icon 'arrow-up-right' %}</a></td></tr>{% empty %}<tr><td colspan="4" class="empty">No hay membresías por vencer en los próximos 7 días.</td></tr>{% endfor %}</tbody></table></div>
+  </section>
+  <section class="card">
+    <div class="card-heading"><div><h2>Últimas entradas</h2><p>La comunidad en movimiento</p></div><a class="round-icon" href="{% url 'attendance' %}" aria-label="Ver asistencia de hoy">{% icon 'arrow-up-right' %}</a></div>
+    <div class="activity-list">{% for item in recent %}<div class="activity"><span class="avatar">{{ item.member.initials }}</span><div><strong>{{ item.member }}</strong><small>{{ item.checked_in_at|date:'d M · H:i' }}</small></div><span class="activity-check">{% icon 'check' %}</span></div>{% empty %}<p class="empty">Las primeras entradas aparecerán aquí.</p>{% endfor %}</div>
+  </section>
+</div>
+{% endblock %}

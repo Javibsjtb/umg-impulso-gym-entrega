@@ -1,0 +1,16 @@
+.env
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.sqlite3
+*.sqlite3-*
+staticfiles/
+.DS_Store
+coverage.xml
+.coverage
+htmlcov/
+*.log
+backups/
+docs/evidencias/privado/
+ACCESO_LOCAL.md

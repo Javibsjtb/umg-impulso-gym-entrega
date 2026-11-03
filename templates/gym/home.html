@@ -1,0 +1,108 @@
+{% load static gym_tags %}<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#080808">
+<meta name="description" content="Encuentra tu siguiente meta. Planes y gestión de membresías de {{ gym_name }}.">
+<title>{{ gym_name }} · Vive tu mejor versión</title>
+<link rel="icon" href="{% static 'gym/figma/2b858.png' %}">
+<link rel="stylesheet" href="{% static 'gym/fitness.css' %}?v=3">
+<link rel="stylesheet" href="{% static 'gym/fitness-refine.css' %}?v=1">
+<script src="{% static 'gym/fitness.js' %}" defer></script>
+</head>
+<body class="fitness-site">
+<a class="skip-link" href="#contenido">Saltar al contenido</a>
+
+<section class="fitness-hero" id="inicio" data-node-id="1:38">
+  <img class="hero-photo" src="{% static 'gym/figma/4663d.png' %}" alt="Atleta preparándose para levantar una barra" fetchpriority="high">
+  <div class="hero-shape" aria-hidden="true"></div>
+  <header class="fitness-nav">
+    <a class="fitness-brand" href="{% url 'home' %}"><img src="{% static 'gym/figma/2b858.png' %}" width="52" height="48" alt="Emblema Chamith de la plantilla de referencia"><span>{{ gym_name }}<small>FITNESS & TRAINING</small></span></a>
+    <button class="fitness-menu" type="button" aria-expanded="false" aria-controls="site-links" aria-label="Abrir navegación">{% icon 'menu' %}</button>
+    <nav id="site-links" aria-label="Navegación del gimnasio"><a href="#inicio" class="active">Inicio</a><a href="#nosotros">Nosotros</a><a href="#planes">Planes</a><a href="#contacto">Contacto</a></nav>
+    <a class="fitness-button white nav-login" href="{% if user.is_authenticated %}{% url 'dashboard' %}{% else %}{% url 'login' %}{% endif %}">{% if user.is_authenticated %}Mi panel{% else %}Ingresar{% endif %} {% icon 'arrow-up-right' %}</a>
+  </header>
+  <div class="hero-copy" id="contenido">
+    <h1>Vive tu <br>mejor versión.</h1>
+    <p>La fuerza se construye un día a la vez. Encuentra tu ritmo, elige tu plan y da el siguiente paso.</p>
+    <a class="fitness-button white" href="#planes">Comienza hoy {% icon 'arrow-right' %}</a>
+    <div class="hero-socials" aria-label="Consulta nuestras redes en contacto"><a href="#contacto" aria-label="Información de Twitter"><img src="{% static 'gym/figma/8bd13.svg' %}" alt=""></a><a href="#contacto" aria-label="Información de Facebook"><img src="{% static 'gym/figma/623bc.svg' %}" alt=""></a><a href="#contacto" aria-label="Información de Instagram"><img src="{% static 'gym/figma/51c61.svg' %}" alt=""></a></div>
+  </div>
+  <div class="hero-bottom"><span>Fuerza. Constancia. Progreso.</span><a href="#nosotros">Descubre más <span aria-hidden="true">↓</span></a></div>
+</section>
+
+{% if demo_mode %}<div class="fitness-demo">Proyecto demo · Marca, planes e imágenes de referencia. Negocio real pendiente de confirmar.</div>{% endif %}
+
+{% with by_days=public_plans|dictsort:"duration_days" %}
+<section class="fitness-stats" aria-label="Resumen de planes">
+  <div><strong>{{ public_plans|length|stringformat:'02d' }}</strong><span>Planes disponibles</span></div>
+  {% if public_plans %}
+  <div><strong>{{ public_plans.0.price|money }}</strong><span>Precio desde</span></div>
+  <div><strong>{% with first=by_days|first last=by_days|last %}{% if first.duration_days == last.duration_days %}{{ first.duration_days }}{% else %}{{ first.duration_days }}–{{ last.duration_days }}{% endif %}{% endwith %}</strong><span>Días de vigencia</span></div>
+  {% endif %}
+  <div><strong>1×</strong><span>Entrada registrada por día</span></div>
+</section>
+{% endwith %}
+
+<main>
+<section class="fitness-section why-section" id="nosotros" data-node-id="1:91">
+  <div class="section-title reveal"><h2>Un lugar para superarte.</h2><p>Haz del movimiento parte de tu día. <br>Tu siguiente meta comienza con un primer paso.</p></div>
+  <div class="why-layout">
+    <div class="benefit-grid">
+      <article class="benefit reveal"><span class="benefit-icon"><img src="{% static 'gym/figma/9fd18.svg' %}" alt=""></span><div><h3>Entrena con propósito</h3><p>Define una meta, encuentra tu rutina y avanza a tu propio ritmo. Cada sesión es una oportunidad para volver a intentarlo.</p></div></article>
+      <article class="benefit reveal"><span class="benefit-icon"><img src="{% static 'gym/figma/1d151.svg' %}" alt=""></span><div><h3>Construye constancia</h3><p>El progreso está en lo que haces cada día. Elige una membresía que acompañe tu compromiso y tu tiempo.</p></div></article>
+      <article class="benefit reveal"><span class="benefit-icon"><img src="{% static 'gym/figma/0e7f7.svg' %}" alt=""></span><div><h3>Encuentra tu energía</h3><p>Reserva un momento para ti. Muévete, concéntrate en tu entrenamiento y disfruta el camino hacia tu próxima meta.</p></div></article>
+    </div>
+    <div class="facility-collage reveal"><div class="facility-stack"><img src="{% static 'gym/figma/aede7.png' %}" alt="Imagen de referencia: cuerdas de entrenamiento" loading="lazy"><img src="{% static 'gym/figma/bd141.png' %}" alt="Imagen de referencia: área de máquinas" loading="lazy"></div><img class="facility-tall" src="{% static 'gym/figma/f5690.png' %}" alt="Imagen de referencia: accesorios de entrenamiento" loading="lazy"></div>
+  </div>
+</section>
+
+<section class="fitness-section coach-section" data-node-id="1:136">
+  <div class="coach-photos reveal"><img src="{% static 'gym/figma/236a2.png' %}" alt="Imagen de referencia: entrenamiento funcional" loading="lazy"><img src="{% static 'gym/figma/eefe1.png' %}" alt="Imagen de referencia: preparación deportiva" loading="lazy"></div>
+  <div class="coach-copy reveal"><p class="section-kicker">¿Listo para dar el siguiente paso?</p><h2>Tu mejor aliado <br>es la constancia.</h2><p>Empieza desde donde estás. Encuentra el plan que mejor se adapte a tu ritmo y consulta en recepción cómo comenzar.</p><a class="fitness-button black" href="#planes">Explorar planes {% icon 'arrow-up-right' %}</a></div>
+</section>
+
+<section class="fitness-section gallery-section" id="entrenamiento" data-node-id="1:149">
+  <div class="section-title reveal"><h2>La actitud se entrena.</h2><p>Fuerza, enfoque y ganas de avanzar. <br>Una mirada al espíritu de nuestro proyecto.</p></div>
+  <div class="fitness-gallery reveal">
+    <div class="gallery-row first"><img src="{% static 'gym/figma/05c4c.png' %}" alt="Referencia visual: ejercicio de fuerza" loading="lazy"><img src="{% static 'gym/figma/fca43.png' %}" alt="Referencia visual: entrenamiento con pesas al aire libre" loading="lazy"><img src="{% static 'gym/figma/05b72.png' %}" alt="Referencia visual: levantamiento de barra" loading="lazy"></div>
+    <div class="gallery-row second"><img src="{% static 'gym/figma/7a68f.png' %}" alt="Referencia visual: entrenamiento en gimnasio" loading="lazy"><img src="{% static 'gym/figma/9c540.png' %}" alt="Referencia visual: ejercicio con mancuernas" loading="lazy"><img src="{% static 'gym/figma/afaa8.png' %}" alt="Referencia visual: acompañamiento deportivo" loading="lazy"></div>
+  </div>
+  <p class="image-caption">Fotografías de la plantilla de referencia; no representan instalaciones ni personal de un negocio identificado.</p>
+</section>
+
+<section class="fitness-section pricing-section" id="planes" data-node-id="1:163">
+  <div class="pricing-heading reveal"><div><p class="section-kicker">Un plan para cada ritmo</p><h2>Empieza hoy.</h2></div><p class="period-label">Precios en quetzales (GTQ) · pago en recepción</p></div>
+  <div class="fitness-plans">{% for plan in public_plans %}
+    <article class="fitness-plan reveal {% if forloop.counter == 2 %}featured{% endif %}">
+      <p class="plan-name">{{ plan.name }}</p>
+      <div class="fitness-price">{{ plan.price|money }}<span>/ {{ plan.duration_days }} días</span></div>
+      <p>{{ plan.description }}</p>
+      <ul>
+        <li><img src="{% if forloop.counter == 2 %}{% static 'gym/figma/6e3c8.svg' %}{% else %}{% static 'gym/figma/23974.svg' %}{% endif %}" alt="">{{ plan.duration_days }} días de vigencia</li>
+        <li><img src="{% if forloop.counter == 2 %}{% static 'gym/figma/6e3c8.svg' %}{% else %}{% static 'gym/figma/23974.svg' %}{% endif %}" alt="">Registro de asistencia</li>
+        <li><img src="{% if forloop.counter == 2 %}{% static 'gym/figma/6e3c8.svg' %}{% else %}{% static 'gym/figma/23974.svg' %}{% endif %}" alt="">Comprobante de pago</li>
+        <li><img src="{% if forloop.counter == 2 %}{% static 'gym/figma/6e3c8.svg' %}{% else %}{% static 'gym/figma/23974.svg' %}{% endif %}" alt="">Renovación en recepción</li>
+      </ul>
+      <a class="fitness-button {% if forloop.counter == 2 %}white{% else %}black{% endif %}" href="{% if user.is_authenticated %}{% url 'membership_create' %}?plan={{ plan.pk }}{% else %}#contacto{% endif %}">Elegir plan {% icon 'arrow-up-right' %}</a>
+    </article>{% empty %}
+    <div class="no-plans"><h3>Pronto compartiremos nuestros planes.</h3><p>Contacta a recepción para conocer las opciones disponibles.</p></div>{% endfor %}
+  </div>
+</section>
+
+<section class="contact-banner" id="contacto" data-node-id="1:367">
+  <img src="{% static 'gym/figma/345d1.png' %}" alt="" loading="lazy">
+  <div class="reveal"><p>Tu próxima meta te espera.</p><h2>Hagamos que suceda.</h2>{% if gym_phone %}<a class="fitness-button white" href="tel:{{ gym_phone }}">{{ gym_phone }}</a>{% else %}<p class="contact-pending">Información de contacto pendiente de configurar <br>con el gimnasio real.</p>{% endif %}<a class="contact-team" href="{% url 'login' %}">Acceso del equipo {% icon 'arrow-right' %}</a></div>
+</section>
+</main>
+
+<footer class="fitness-footer">
+  <div class="footer-identity"><img src="{% static 'gym/figma/5a266.png' %}" width="72" height="70" alt="Emblema de la plantilla Chamith Fitness"><h3>{{ gym_name }}</h3><p>Fuerza. Constancia. Progreso.</p><div class="footer-socials"><a href="#contacto" aria-label="Información de Facebook"><img src="{% static 'gym/figma/054f8.svg' %}" alt=""></a><a href="#contacto" aria-label="Información de Twitter"><img src="{% static 'gym/figma/ea688.svg' %}" alt=""></a><a href="#contacto" aria-label="Información de Instagram"><img src="{% static 'gym/figma/d4552.svg' %}" alt=""></a></div></div>
+  <div><h3>Explora</h3><a href="#inicio">Inicio</a><a href="#nosotros">Nosotros</a><a href="#entrenamiento">Entrenamiento</a><a href="#planes">Planes</a></div>
+  <div><h3>Tu gimnasio</h3><a href="#contacto">Contacto</a><a href="{% url 'login' %}">Acceso del equipo</a>{% if user.is_authenticated %}<a href="{% url 'dashboard' %}">Panel de gestión</a>{% endif %}</div>
+  <div class="footer-note"><h3>Proyecto UMG</h3><p>Sistema de gestión de gimnasio. <br>Desarrollo Web · Demostración académica.</p><a href="https://www.figma.com/design/HvcxdHqNuFoNFAI8WtUpTg/Chamith-Fitness-Center-Gym-Web-Template--Community-?node-id=0-1" target="_blank" rel="noopener noreferrer">Diseño de referencia: Chamith Fitness ↗</a></div>
+  <div class="footer-credit">Adaptación de la plantilla Chamith Fitness Center · Proyecto académico {{ gym_name }}.</div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,43 @@
+name: Django and PostgreSQL
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: impulso
+          POSTGRES_PASSWORD: ci-only-password
+          POSTGRES_DB: impulso
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U impulso"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DEBUG: 'True'
+      SECRET_KEY: ci-only-not-a-production-secret-please-never-reuse-this-value
+      DATABASE_URL: postgresql://impulso:ci-only-password@localhost:5432/impulso
+      ALLOWED_HOSTS: localhost,127.0.0.1,testserver
+      DEMO_MODE: 'False'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+      - run: python -m pip install -r requirements.txt
+      - run: python manage.py check
+      - run: python manage.py makemigrations --check --dry-run
+      - run: python manage.py test gym --verbosity 2
+      - run: python manage.py collectstatic --noinput
+      - name: Production security configuration
+        run: python manage.py check --deploy --fail-level WARNING
+        env:
+          DEBUG: 'False'
+          CSRF_TRUSTED_ORIGINS: https://gym.example.com
+          ALLOWED_HOSTS: gym.example.com

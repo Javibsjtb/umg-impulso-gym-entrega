@@ -1,0 +1,72 @@
+{% load static gym_tags %}<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#0c0c0c">
+<title>{% block title %}{{ gym_name }} · Gestión{% endblock %}</title>
+<link rel="icon" href="{% static 'gym/figma/2b858.png' %}" type="image/png">
+<link rel="stylesheet" href="{% static 'gym/app.css' %}">
+<link rel="stylesheet" href="{% static 'gym/theme-fitness.css' %}">
+<link rel="stylesheet" href="{% static 'gym/refine.css' %}">
+<script src="{% static 'gym/app.js' %}" defer></script>
+</head>
+<body{% if not user.is_authenticated %} class="is-public"{% endif %}>
+<a class="skip-link" href="#main">Ir al contenido</a>
+{% if user.is_authenticated %}
+<div class="app-shell">
+<aside class="sidebar" id="sidebar" aria-label="Menú del panel">
+  <div class="sidebar-head">
+    <a class="brand" href="{% url 'dashboard' %}"><img class="app-gym-logo" src="{% static 'gym/figma/2b858.png' %}" width="40" height="38" alt=""><span>{{ gym_name }}<small>GESTIÓN DEL GIMNASIO</small></span></a>
+    <button class="sidebar-close" type="button" aria-label="Cerrar menú">{% icon 'close' %}</button>
+  </div>
+  <a class="public-site-link" href="{% url 'home' %}">{% icon 'arrow-left' %} Ver sitio del gimnasio</a>
+  <nav aria-label="Navegación principal">
+    <div class="workspace-label">Tu espacio de trabajo</div>
+    <a href="{% url 'dashboard' %}" {% if request.resolver_match.url_name == 'dashboard' %}aria-current="page"{% endif %}>{% icon 'overview' %} Vista general</a>
+    <a href="{% url 'members' %}" {% if '/socios/' in request.path %}aria-current="page"{% endif %}>{% icon 'members' %} Socios</a>
+    <a href="{% url 'memberships' %}" {% if '/membresias/' in request.path %}aria-current="page"{% endif %}>{% icon 'membership' %} Membresías</a>
+    <a href="{% url 'attendance' %}" {% if '/asistencia/' in request.path %}aria-current="page"{% endif %}>{% icon 'checkin' %} Asistencia</a>
+    <a href="{% url 'payments' %}" {% if '/pagos/' in request.path %}aria-current="page"{% endif %}>{% icon 'payments' %} Pagos</a>
+    <a href="{% url 'plans' %}" {% if '/planes/' in request.path %}aria-current="page"{% endif %}>{% icon 'plans' %} Planes</a>
+    {% if manager %}
+    <div class="workspace-label">Administración</div>
+    <a href="{% url 'reports' %}" {% if '/reportes/' in request.path %}aria-current="page"{% endif %}>{% icon 'reports' %} Reportes</a>
+    <a href="{% url 'users' %}" {% if '/equipo/' in request.path %}aria-current="page"{% endif %}>{% icon 'team' %} Equipo y roles</a>
+    <a href="{% url 'audit' %}" {% if '/auditoria/' in request.path %}aria-current="page"{% endif %}>{% icon 'history' %} Historial</a>
+    {% endif %}
+  </nav>
+  <div class="sidebar-bottom">
+    <div class="profile">
+      <span class="avatar">{{ user.username|first|upper }}</span>
+      <span class="profile-name">{{ user.get_full_name|default:user.username }}<small>{% if manager %}Administración{% else %}Recepción{% endif %}</small></span>
+    </div>
+    <div class="profile-actions">
+      <a href="{% url 'password_change' %}">{% icon 'key' %} Contraseña</a>
+      <form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="logout" type="submit">{% icon 'logout' %} Cerrar sesión</button></form>
+    </div>
+  </div>
+</aside>
+<div class="sidebar-scrim" hidden></div>
+<div class="workspace">
+  <header class="topbar">
+    <button class="menu-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="sidebar">{% icon 'menu' %}</button>
+    <div class="breadcrumb"><span class="breadcrumb-root">Espacio de trabajo</span><span class="breadcrumb-sep" aria-hidden="true">/</span><strong>{% block breadcrumb %}Administración{% endblock %}</strong></div>
+    <div class="topbar-right">{% if demo_mode %}<span class="demo-label">Demo · datos ficticios</span>{% endif %}<span class="online"><span class="live-dot"></span> En línea</span></div>
+  </header>
+  <main id="main" class="main">
+{% else %}
+<main id="main" class="login-main">
+{% endif %}
+{% if messages %}<div class="messages" role="status" aria-live="polite">{% for message in messages %}<div class="message {{ message.tags }}">{{ message }}</div>{% endfor %}</div>{% endif %}
+{% block content %}{% endblock %}
+{% if user.is_authenticated %}
+    <footer class="footer"><span>{{ gym_name }} · Cada día, un paso adelante.</span><span>Hora local · Guatemala</span></footer>
+  </main>
+</div>
+</div>
+{% else %}
+</main>
+{% endif %}
+</body>
+</html>
