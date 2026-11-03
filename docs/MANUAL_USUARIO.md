@@ -12,7 +12,8 @@ Abrir la URL configurada. Introducir la cuenta propia. Cinco fallos bloquean tem
 4. Imprimir el comprobante interno si se necesita. No es una factura fiscal.
 5. En **Asistencia**, escribir el código o buscar por nombre. Seleccionar resultado y pulsar **Validar y registrar**.
 6. Si tiene saldo o no tiene vigencia, el mensaje explica el rechazo. Resolver desde la ficha; no crear entradas por fuera del sistema.
-7. Para renovar, usar **Renovar**; la fecha sugerida comienza después del último período no cancelado o desde hoy si ya venció.
+7. En **Asistencia**, usa **Consultar fecha** para revisar entradas de un día anterior. Solo consulta: registrar entradas retroactivas no está disponible.
+8. Para renovar, usar **Renovar**; la fecha sugerida comienza después del último período no cancelado o desde hoy si ya venció.
 
 ## Administración
 
@@ -20,7 +21,7 @@ Abrir la URL configurada. Introducir la cuenta propia. Cinco fallos bloquean tem
 - **Socios:** desactivar desde Editar ficha para impedir acceso y nuevas membresías. El historial se conserva.
 - **Pagos:** abrir comprobante → Anular → motivo. Solo para corregir registros. El saldo vuelve a quedar pendiente y puede impedir entrada.
 - **Membresías:** Cancelar con motivo. Pagos anteriores permanecen; un eventual reembolso se realiza fuera del sistema y debe conciliarse según el procedimiento del negocio.
-- **Reportes:** elegir fechas → Consultar o Descargar CSV. El total usa pagos no anulados según su estado actual.
+- **Reportes:** elegir fechas → Consultar, **Pagos CSV** o **Asistencias CSV**. El total usa pagos no anulados según su estado actual. El CSV de asistencias incluye fecha, hora, socio, plan y recepción.
 - **Equipo y roles:** crear cuentas individuales. Desactivar a quien ya no deba ingresar. No compartir contraseñas.
 - **Historial:** consultar quién realizó operaciones y cuándo.
 
