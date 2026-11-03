@@ -24,3 +24,7 @@ La revisión en navegador confirmó búsqueda Fetch, registro de la primera asis
 La base local SQLite no permite demostrar la protección ante escrituras concurrentes de PostgreSQL. Las tres pruebas específicas sí se ejecutaron satisfactoriamente en el CI enlazado arriba. Tampoco se ha comprobado un despliegue público, restauración de backup o aceptación por un negocio real.
 
 Los casos manuales propuestos en CASOS_DE_PRUEBA.md no se deben marcar todos aprobados con base en este documento. El equipo debe ejecutar los que dependan de producción, accesibilidad asistida, aceptación o configuración real.
+
+## Mejoras del 2 de noviembre de 2026
+
+Se agregaron búsqueda por nombre completo, consulta de asistencias por fecha y CSV de asistencia por rango con protección contra fórmulas y control de rol. La suite local se amplió a **56 pruebas descubiertas, 53 aprobadas y 3 omitidas**, sin fallos (30.080 segundos). Las tres omitidas requieren PostgreSQL; las **56 pruebas pasaron en [GitHub Actions con PostgreSQL 16](https://github.com/Javibsjtb/umg-impulso-gym-entrega/actions/runs/41578110738)**, sin omisiones (38.274 segundos). El resultado de octubre corresponde al prototipo anterior y se conserva como antecedente.

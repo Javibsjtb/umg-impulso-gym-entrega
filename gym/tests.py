@@ -263,6 +263,14 @@ class WebTests(Fixtures, TestCase):
         self.assertContains(response,'q=Other'); self.assertNotContains(response,'??')
         self.assertEqual(self.client.get('/socios/?q=Ana').context['page'].paginator.count,1)
 
+    def test_full_name_search_across_workflows(self):
+        self.pay()
+        for path in ['/socios/', '/membresias/', '/pagos/']:
+            with self.subTest(path=path):
+                self.assertEqual(self.client.get(path, {'q': 'Ana Demo'}).context['page'].paginator.count, 1)
+        result = self.client.get('/api/socios/', {'q': 'Ana Demo'}).json()['results']
+        self.assertEqual([item['code'] for item in result], ['IG-001'])
+
     def test_lookup_limits_and_authorization(self):
         response=self.client.get('/api/socios/?q=An')
         self.assertEqual(response.json()['results'][0]['code'],'IG-001')
@@ -288,6 +296,29 @@ class WebTests(Fixtures, TestCase):
         self.assertEqual(response.status_code,200); self.assertFalse(response.context['valid_range'])
         response=self.client.get('/reportes/',{'start':self.today.isoformat(),'end':(self.today-timedelta(days=1)).isoformat()})
         self.assertFalse(response.context['valid_range'])
+
+    def test_attendance_history_date_filter_and_csv(self):
+        self.pay()
+        check_in(member=self.member, actor=self.reception)
+        yesterday = self.today - timedelta(days=1)
+        self.membership.start_date = yesterday
+        self.membership.save(update_fields=['start_date'])
+        Attendance.objects.create(member=self.member, membership=self.membership, date=yesterday, created_by=self.reception)
+        self.assertEqual(self.client.get('/asistencia/').context['page'].paginator.count, 1)
+        historical = self.client.get('/asistencia/', {'date': yesterday.isoformat()})
+        self.assertEqual(historical.context['page'].paginator.count, 1)
+        self.assertEqual(historical.context['page'][0].date, yesterday)
+        invalid = self.client.get('/asistencia/', {'date': 'bad-date'})
+        self.assertEqual(invalid.status_code, 200)
+        self.assertIn('date', invalid.context['date_form'].errors)
+        self.member.first_name = '=FORMULA'; self.member.save()
+        response = self.client.get('/reportes/', {'start': self.today.isoformat(), 'end': self.today.isoformat(), 'format': 'attendance_csv'})
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('reporte-asistencia.csv', response['Content-Disposition'])
+        self.assertContains(response, "'=FORMULA")
+        self.assertContains(response, 'IG-001')
+        self.client.force_login(self.reception)
+        self.assertEqual(self.client.get('/reportes/', {'start': self.today.isoformat(), 'end': self.today.isoformat(), 'format': 'attendance_csv'}).status_code, 403)
 
     def test_output_escapes_xss(self):
         self.member.first_name='<script>alert(1)</script>'; self.member.save()

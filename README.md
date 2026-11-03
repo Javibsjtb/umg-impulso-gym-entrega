@@ -4,7 +4,7 @@ Aplicación full-stack para administrar socios, planes, membresías, pagos y asi
 
 **Estado:** implementación local funcional con datos ficticios. El negocio real, la validación del PRD, la participación de cinco estudiantes, la actividad de los estudiantes en el tablero, la revisión colaborativa y la publicación web son pendientes reales. Este trabajo no garantiza una nota ni sustituye esas evidencias.
 
-Repositorio de entrega: [Javibsjtb/umg-impulso-gym-entrega](https://github.com/Javibsjtb/umg-impulso-gym-entrega).
+Repositorio público de entrega: [Javibsjtb/umg-impulso-gym-entrega](https://github.com/Javibsjtb/umg-impulso-gym-entrega). [Por qué el historial comienza en noviembre de 2026](docs/CAMBIO_REPOSITORIO.md).
 
 ![Portada basada en Figma](docs/evidencias/portada-desktop.png)
 
@@ -33,14 +33,14 @@ La demo contiene 24 socios y tres planes, pagos ficticios, membresías vigentes,
 ## Qué puedes hacer
 
 - Panel con socios habilitados, ingresos del mes, asistencia diaria y vencimientos próximos.
-- Crear, buscar, editar, desactivar y eliminar socios sin historial; paginación de 15 registros.
+- Crear, buscar por nombre completo, editar, desactivar y eliminar socios sin historial; paginación de 15 registros.
 - Administrar planes; conservar precio y duración de cada contrato aunque el plan cambie.
 - Inscribir y renovar membresías sin superposición de períodos.
 - Registrar pagos parciales o completos con comprobante imprimible e idempotencia ante reenvíos.
 - Anular cobros con motivo, fecha y responsable; no borrar movimientos financieros.
-- Admitir socios únicamente con membresía vigente y pagada; una asistencia por día.
+- Admitir socios únicamente con membresía vigente y pagada; una asistencia por día. Consultar el historial por fecha.
 - Buscar socios sin recargar la página mediante `/api/socios/` y Fetch.
-- Exportar pagos a CSV, filtrar por fechas y revisar auditoría.
+- Exportar pagos y asistencias a CSV por rango de fechas, filtrar y revisar auditoría.
 - Crear usuarios de Administración y Recepción; cambiar la contraseña propia.
 
 No procesa tarjetas, no emite facturas fiscales y no automatiza devoluciones bancarias.
@@ -54,7 +54,7 @@ python manage.py test gym --verbosity 2
 python manage.py collectstatic --noinput
 ```
 
-La suite tiene 54 pruebas. En SQLite se omiten tres que comprueban concurrencia mediante bloqueos de PostgreSQL. Resultado local documentado en [Validación](docs/VALIDACION.md). Las **54 pruebas pasaron en PostgreSQL 16 en [GitHub Actions](https://github.com/Javibsjtb/umg-impulso-gym/actions/runs/38933107025)**, sin omisiones.
+La suite tiene 56 pruebas. En SQLite se omiten tres que comprueban concurrencia mediante bloqueos de PostgreSQL. Resultado local documentado en [Validación](docs/VALIDACION.md). Las **56 pruebas pasaron en PostgreSQL 16 en [GitHub Actions](https://github.com/Javibsjtb/umg-impulso-gym-entrega/actions/runs/41578110738)**, sin omisiones.
 
 ### PostgreSQL local con Docker
 
@@ -85,6 +85,7 @@ El navegador envía formularios con CSRF; las vistas autorizan el rol y los serv
 ## Documentación y entrega
 
 - [Índice de documentos](docs/INDICE.md)
+- [Nota sobre el cambio de repositorio](docs/CAMBIO_REPOSITORIO.md)
 - [PRD en PDF solicitado por la rúbrica](docs/PRD_Impulso_Gym_UMG.pdf)
 - [PRD editable y criterios de aceptación](docs/PRD.md)
 - [Levantamiento del negocio real](docs/NEGOCIO_REAL.md)

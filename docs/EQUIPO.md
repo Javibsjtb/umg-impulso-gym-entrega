@@ -1,6 +1,6 @@
 # Equipo de cinco estudiantes
 
-**Ninguna identidad ni participación ha sido inventada.** Completar antes del primer sprint real.
+**Ninguna identidad ni participación ha sido inventada.** Completar nombres, carnés y roles acordados antes del primer sprint real. Invitaciones de escritura enviadas a `Lilmaarx` y `crmarjorie` el 2/11/2026; aún no equivalen a contribuciones.
 
 | Integrante | Nombre / carné | Usuario GitHub | Rol Scrum | Responsabilidad inicial propuesta |
 |---|---|---|---|---|

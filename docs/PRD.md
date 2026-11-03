@@ -1,6 +1,6 @@
 # PRD · Impulso Gym
 
-Versión 0.1 · Propuesta de prototipo · **Pendiente de validación con negocio real y docente**.
+Versión 0.2 · Propuesta de prototipo · **Pendiente de validación con negocio real y docente**.
 
 ## 1. Identificación y contexto
 
@@ -46,11 +46,11 @@ Facturación SAT/FEL, cargos automáticos, pasarela de pagos, transferencias rea
 | RF-05 | Membresías y renovaciones | Inicio más duración menos un día determina vencimiento inclusivo; períodos no se superponen; renovación sugerida después del último vencimiento |
 | RF-06 | Registro de pagos | Monto positivo que no exceda saldo; transferencia/tarjeta requiere referencia; reenvío del mismo token y datos produce un solo comprobante |
 | RF-07 | Correcciones con trazabilidad | Administración anula pago o cancela membresía con motivo; original se conserva; anular recalcula saldo; cancelar no hace reembolsos |
-| RF-08 | Asistencia | Solo socio activo con período vigente y saldo cero; un registro al día; repetición informa sin duplicar; último día incluido |
+| RF-08 | Asistencia | Solo socio activo con período vigente y saldo cero; un registro al día; repetición informa sin duplicar; último día incluido; historial consultable por fecha |
 | RF-09 | Panel y vencimientos | Indicadores calculados desde DB; próximos siete días filtrables; distinguir membresía vigente, por vencer, vencida, programada, pendiente o cancelada |
-| RF-10 | Búsqueda y paginación | Socios por nombre/código/correo; membresías por socio; pagos por socio/referencia; 15 filas por página y filtros conservados |
+| RF-10 | Búsqueda y paginación | Socios por nombre completo/código/correo; membresías por socio; pagos por socio/referencia; 15 filas por página y filtros conservados |
 | RF-11 | Consulta Fetch | Búsqueda desde 2 caracteres devuelve hasta 8 coincidencias autorizadas, sin correo/teléfono; selección llena el código sin recargar |
-| RF-12 | Reportes | Filtro de fechas inclusivas; CSV de pagos incluye estado; total excluye anulados; datos que parecen fórmula se escapan |
+| RF-12 | Reportes | Filtro de fechas inclusivas; CSV de pagos incluye estado y CSV de asistencias incluye socio, plan y recepción; total excluye anulados; datos que parecen fórmula se escapan |
 | RF-13 | Cuentas individuales | Administrador crea recepción/administración; no puede quitarse su propio rol ni desactivarse; contraseñas se almacenan mediante hash de Django |
 | RF-14 | Auditoría | Acciones operativas guardan usuario, acción, entidad, fecha y detalle; interfaz solo lectura |
 

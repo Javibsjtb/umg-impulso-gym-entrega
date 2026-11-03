@@ -12,7 +12,8 @@ from django.contrib.auth.views import LoginView
 from django.core.exceptions import ValidationError
 from django.core.paginator import Paginator
 from django.db import transaction, connection
-from django.db.models import Count, F, Q, Sum
+from django.db.models import Count, F, Q, Sum, Value
+from django.db.models.functions import Concat
 from django.db.models.deletion import ProtectedError
 from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
@@ -20,7 +21,7 @@ from django.urls import reverse
 from django.utils import timezone
 from django.views.decorators.http import require_GET, require_POST
 
-from .forms import MemberForm, PlanForm, EnrollmentForm, PaymentForm, CheckInForm, ReasonForm, StaffUserForm, StaffEditForm, LoginForm
+from .forms import MemberForm, PlanForm, EnrollmentForm, PaymentForm, CheckInForm, AttendanceDateForm, ReasonForm, StaffUserForm, StaffEditForm, LoginForm
 from .models import Member, Plan, Membership, Payment, Attendance, AuditEvent, LoginThrottle
 from .permissions import staff_required, is_manager, MANAGER, RECEPTION
 from .services import enroll, collect_payment, check_in, void_payment, cancel_membership, audit
@@ -28,6 +29,11 @@ from .services import enroll, collect_payment, check_in, void_payment, cancel_me
 
 def pages(request, objects):
     return Paginator(objects, 15).get_page(request.GET.get('page'))
+
+
+def csv_safe(value):
+    value = str(value)
+    return "'" + value if value.lstrip().startswith(('=', '+', '-', '@', '\t', '\r')) else value
 
 
 class StaffLoginView(LoginView):
@@ -99,9 +105,9 @@ def dashboard(request):
 def member_list(request):
     q = request.GET.get('q', '').strip()[:100]
     status = request.GET.get('status', '')
-    members = Member.objects.all()
+    members = Member.objects.alias(full_name=Concat('first_name', Value(' '), 'last_name'))
     if q:
-        members = members.filter(Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(code__icontains=q) | Q(email__icontains=q))
+        members = members.filter(Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(full_name__icontains=q) | Q(code__icontains=q) | Q(email__icontains=q))
     if status in ('active', 'inactive'):
         members = members.filter(active=status == 'active')
     return render(request, 'gym/members.html', {'page': pages(request, members), 'q': q, 'status': status,
@@ -191,9 +197,9 @@ def memberships(request):
     today = timezone.localdate()
     q = request.GET.get('q', '').strip()[:100]
     status = request.GET.get('status', '')
-    objects = Membership.objects.select_related('member', 'plan')
+    objects = Membership.objects.select_related('member', 'plan').alias(member_full_name=Concat('member__first_name', Value(' '), 'member__last_name'))
     if q:
-        objects = objects.filter(Q(member__first_name__icontains=q) | Q(member__last_name__icontains=q) | Q(member__code__icontains=q))
+        objects = objects.filter(Q(member__first_name__icontains=q) | Q(member__last_name__icontains=q) | Q(member_full_name__icontains=q) | Q(member__code__icontains=q))
     if status == 'expiring':
         objects = objects.filter(cancelled=False, start_date__lte=today, end_date__range=(today, today+timedelta(days=7)))
     elif status == 'expired':
@@ -265,9 +271,9 @@ def payment_create(request, pk):
 @staff_required
 def payments(request):
     q = request.GET.get('q', '').strip()[:100]
-    objects = Payment.objects.select_related('membership__member', 'created_by')
+    objects = Payment.objects.select_related('membership__member', 'created_by').alias(member_full_name=Concat('membership__member__first_name', Value(' '), 'membership__member__last_name'))
     if q:
-        objects = objects.filter(Q(membership__member__first_name__icontains=q) | Q(membership__member__last_name__icontains=q) |
+        objects = objects.filter(Q(membership__member__first_name__icontains=q) | Q(membership__member__last_name__icontains=q) | Q(member_full_name__icontains=q) |
                                   Q(membership__member__code__icontains=q) | Q(reference__icontains=q))
     return render(request, 'gym/payments.html', {'page': pages(request, objects), 'q': q})
 
@@ -310,8 +316,11 @@ def attendance(request):
             except ValidationError as exc:
                 form.add_error(None, exc)
     today = timezone.localdate()
-    return render(request, 'gym/attendance.html', {'form': form, 'today': today,
-        'page': pages(request, Attendance.objects.filter(date=today).select_related('member', 'created_by'))})
+    date_form = AttendanceDateForm(request.GET or {'date': today})
+    selected_date = date_form.cleaned_data['date'] if date_form.is_valid() else today
+    return render(request, 'gym/attendance.html', {'form': form, 'date_form': date_form, 'today': today,
+        'selected_date': selected_date,
+        'page': pages(request, Attendance.objects.filter(date=selected_date).select_related('member', 'created_by'))})
 
 
 @staff_required
@@ -320,7 +329,9 @@ def member_lookup(request):
     q = request.GET.get('q', '').strip()[:80]
     if len(q) < 2:
         return JsonResponse({'results': []})
-    objects = Member.objects.filter(Q(code__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q)).order_by('first_name')[:8]
+    objects = Member.objects.alias(full_name=Concat('first_name', Value(' '), 'last_name')).filter(
+        Q(code__icontains=q) | Q(first_name__icontains=q) | Q(last_name__icontains=q) | Q(full_name__icontains=q)
+    ).order_by('first_name')[:8]
     return JsonResponse({'results': [{'code': m.code, 'name': str(m), 'active': m.active} for m in objects]})
 
 
@@ -348,15 +359,26 @@ def reports(request):
         response.write('\ufeff')
         writer = csv.writer(response)
         writer.writerow(['Comprobante', 'Fecha', 'Código socio', 'Socio', 'Monto Q', 'Método', 'Estado'])
-        def safe(value):
-            value = str(value)
-            return "'" + value if value.lstrip().startswith(('=', '+', '-', '@', '\t', '\r')) else value
         for p in objects:
-            writer.writerow([p.receipt, timezone.localtime(p.created_at).isoformat(), safe(p.membership.member.code), safe(p.membership.member), p.amount, p.get_method_display(), 'Anulado' if p.voided else 'Registrado'])
+            writer.writerow([p.receipt, timezone.localtime(p.created_at).isoformat(), csv_safe(p.membership.member.code), csv_safe(p.membership.member), p.amount, p.get_method_display(), 'Anulado' if p.voided else 'Registrado'])
+        return response
+    attendances = Attendance.objects.none()
+    if form.is_valid():
+        attendances = Attendance.objects.filter(date__range=(form.cleaned_data['start'], form.cleaned_data['end']))
+    if request.GET.get('format') == 'attendance_csv' and form.is_valid():
+        response = HttpResponse(content_type='text/csv; charset=utf-8')
+        response['Content-Disposition'] = 'attachment; filename="reporte-asistencia.csv"'
+        response.write('\ufeff')
+        writer = csv.writer(response)
+        writer.writerow(['Fecha', 'Hora', 'Código socio', 'Socio', 'Plan', 'Recepción'])
+        for entry in attendances.select_related('member', 'membership__plan', 'created_by').order_by('date', 'checked_in_at'):
+            writer.writerow([entry.date.isoformat(), timezone.localtime(entry.checked_in_at).strftime('%H:%M'),
+                             csv_safe(entry.member.code), csv_safe(entry.member), csv_safe(entry.membership.plan.name),
+                             csv_safe(entry.created_by.username)])
         return response
     return render(request, 'gym/reports.html', {'form': form, 'total': total, 'count': valid.count(),
         'voided_count': objects.filter(voided=True).count(), 'by_method': valid.values('method').annotate(total=Sum('amount')).order_by('method'),
-        'page': pages(request, objects), 'valid_range': form.is_valid()})
+        'attendance_count': attendances.count(), 'page': pages(request, objects), 'valid_range': form.is_valid()})
 
 
 @staff_required(manager=True)

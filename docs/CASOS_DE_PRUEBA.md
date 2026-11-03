@@ -41,6 +41,9 @@ Ejecutar en entorno de pruebas con datos ficticios. No usar pagos reales. Regist
 | CP-35 | Publicar y reiniciar servidor | Datos persisten, HTTPS y login operativos | Pendiente de despliegue |
 | CP-36 | Restaurar respaldo en DB separada | Conteos y relaciones consistentes | Pendiente en proveedor |
 | CP-37 | Prueba observada por gimnasio real | Criterios aceptados o incidencias anotadas | Pendiente de negocio |
+| CP-38 | Buscar "Ana Demo" en socios, membresías, pagos y búsqueda rápida | Coincide el nombre completo en los cuatro flujos | WebTests |
+| CP-39 | Consultar asistencias de hoy y de ayer | Cada fecha muestra solo sus entradas; fecha inválida no causa error | WebTests |
+| CP-40 | Exportar asistencias por rango como administración y como recepción | CSV con socio/plan/recepción; texto tipo fórmula escapado; recepción recibe 403 | WebTests |
 
 ## Datos y criterios para pruebas de carga pendientes
 
