@@ -27,4 +27,4 @@ Los casos manuales propuestos en CASOS_DE_PRUEBA.md no se deben marcar todos apr
 
 ## Mejoras del 2 de noviembre de 2026
 
-Se agregaron búsqueda por nombre completo, consulta de asistencias por fecha y CSV de asistencia por rango con protección contra fórmulas y control de rol. La suite local se amplió a **56 pruebas descubiertas, 53 aprobadas y 3 omitidas**, sin fallos (30.080 segundos). Las tres omitidas requieren PostgreSQL; el enlace de la nueva ejecución de CI se añadirá tras completarse. El resultado de octubre corresponde al prototipo anterior y se conserva como antecedente.
+Se agregaron búsqueda por nombre completo, consulta de asistencias por fecha y CSV de asistencia por rango con protección contra fórmulas y control de rol. La suite local se amplió a **56 pruebas descubiertas, 53 aprobadas y 3 omitidas**, sin fallos (30.080 segundos). Las tres omitidas requieren PostgreSQL; las **56 pruebas pasaron en [GitHub Actions con PostgreSQL 16](https://github.com/Javibsjtb/umg-impulso-gym-entrega/actions/runs/41578110738)**, sin omisiones (38.274 segundos). El resultado de octubre corresponde al prototipo anterior y se conserva como antecedente.

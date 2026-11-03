@@ -54,7 +54,7 @@ python manage.py test gym --verbosity 2
 python manage.py collectstatic --noinput
 ```
 
-La suite tiene 56 pruebas. En SQLite se omiten tres que comprueban concurrencia mediante bloqueos de PostgreSQL. Resultado local documentado en [Validación](docs/VALIDACION.md). Las **54 pruebas pasaron en PostgreSQL 16 en [GitHub Actions](https://github.com/Javibsjtb/umg-impulso-gym/actions/runs/38933107025)**, sin omisiones.
+La suite tiene 56 pruebas. En SQLite se omiten tres que comprueban concurrencia mediante bloqueos de PostgreSQL. Resultado local documentado en [Validación](docs/VALIDACION.md). Las **56 pruebas pasaron en PostgreSQL 16 en [GitHub Actions](https://github.com/Javibsjtb/umg-impulso-gym-entrega/actions/runs/41578110738)**, sin omisiones.
 
 ### PostgreSQL local con Docker
 

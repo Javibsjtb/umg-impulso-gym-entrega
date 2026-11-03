@@ -21,6 +21,6 @@ No hay negocio identificado, entrevistas realizadas, firmas, aprobaciones, reuni
 | PRD validado | [pendiente] | [pendiente] | | Abierto |
 | Cinco integrantes y tablero | [pendiente] | [pendiente] | | Abierto |
 | PR reales / revisión | [pendiente] | [pendiente] | | Abierto |
-| CI PostgreSQL | Prototipo previo | 02/11/2026 | [Suite base aprobada](https://github.com/Javibsjtb/umg-impulso-gym-entrega/actions/runs/41576764744) | Completado técnicamente |
+| CI PostgreSQL | Prototipo previo | 02/11/2026 | [56 pruebas aprobadas](https://github.com/Javibsjtb/umg-impulso-gym-entrega/actions/runs/41578110738) | Completado técnicamente |
 | URL HTTPS y persistencia | [pendiente] | [pendiente] | | Abierto |
 | Recuperación y aceptación | [pendiente] | [pendiente] | | Abierto |
