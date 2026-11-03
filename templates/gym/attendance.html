@@ -1,1 +1,56 @@
-{% extends 'base.html' %}{% load gym_tags %}{% block breadcrumb %}Asistencia{% endblock %}{% block content %}<div class="page-heading"><div><span class="eyebrow">BIENVENIDOS A ENTRENAR</span><h1>Una entrada. Un paso adelante.</h1><p>{{ today|date:'l, d F Y' }} · Acceso con membresía vigente y pagada.</p></div><span class="badge green">{{ page.paginator.count }} entrada{{ page.paginator.count|pluralize }} hoy</span></div><div class="attendance-grid"><section class="card checkin-form"><span class="round-icon">{% icon 'checkin' %}</span><h2>Registrar asistencia</h2><p class="muted">Escribe el código o busca al socio por su nombre.</p><form method="post">{% csrf_token %}{{ form.non_field_errors }}<div class="field">{{ form.code.label_tag }}{{ form.code }}{{ form.code.errors }}</div><button type="submit" class="button primary full">Validar y registrar {% icon 'arrow-right' %}</button></form><div class="field section-gap"><label for="member-search">Buscar nombre o código</label><input type="search" id="member-search" placeholder="Al menos 2 caracteres" data-lookup-url="{% url 'member_lookup' %}" autocomplete="off"><div id="lookup-results" class="lookup-results" aria-live="polite"></div></div><p class="help-text">La entrada se registra una sola vez al día. Un intento repetido conserva el registro original.</p></section><section class="card"><div class="card-heading"><h2>Entradas de hoy</h2><span class="muted">Más recientes primero</span></div><div class="table-wrap"><table class="stack"><thead><tr><th>Socio</th><th>Hora</th><th>Recepción</th></tr></thead><tbody>{% for a in page %}<tr><td data-label="Socio"><a class="person" href="{% url 'member_detail' a.member_id %}"><span class="avatar">{{ a.member.initials }}</span><span>{{ a.member }}<small>{{ a.member.code }}</small></span></a></td><td data-label="Hora">{{ a.checked_in_at|date:'H:i' }}</td><td data-label="Recepción">{{ a.created_by.username }}</td></tr>{% empty %}<tr><td colspan="3" class="empty">Aún no hay entradas hoy. Registra la primera.</td></tr>{% endfor %}</tbody></table></div>{% include 'gym/pagination.html' %}</section></div>{% endblock %}
+{% extends 'base.html' %}
+{% load gym_tags %}
+{% block breadcrumb %}Asistencia{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div>
+    <span class="eyebrow">BIENVENIDOS A ENTRENAR</span>
+    <h1>Una entrada. Un paso adelante.</h1>
+    <p>{{ today|date:'l, d F Y' }} · Acceso con membresía vigente y pagada.</p>
+  </div>
+  <span class="badge green">{{ page.paginator.count }} entrada{{ page.paginator.count|pluralize }} el {{ selected_date|date:'d/m/Y' }}</span>
+</div>
+<div class="attendance-grid">
+  <section class="card checkin-form">
+    <span class="round-icon">{% icon 'checkin' %}</span>
+    <h2>Registrar asistencia</h2>
+    <p class="muted">Escribe el código o busca al socio por su nombre.</p>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.non_field_errors }}
+      <div class="field">{{ form.code.label_tag }}{{ form.code }}{{ form.code.errors }}</div>
+      <button type="submit" class="button primary full">Validar y registrar {% icon 'arrow-right' %}</button>
+    </form>
+    <div class="field section-gap">
+      <label for="member-search">Buscar nombre o código</label>
+      <input type="search" id="member-search" placeholder="Al menos 2 caracteres" data-lookup-url="{% url 'member_lookup' %}" autocomplete="off">
+      <div id="lookup-results" class="lookup-results" aria-live="polite"></div>
+    </div>
+    <p class="help-text">La entrada se registra una sola vez al día. Un intento repetido conserva el registro original.</p>
+  </section>
+  <section class="card">
+    <div class="card-heading"><h2>Historial de entradas</h2><span class="muted">Más recientes primero</span></div>
+    <form method="get" class="filters date-filters">
+      <div class="field">{{ date_form.date.label_tag }}{{ date_form.date }}{{ date_form.date.errors }}</div>
+      <button type="submit" class="button secondary">Consultar fecha</button>
+    </form>
+    <div class="table-wrap">
+      <table class="stack">
+        <thead><tr><th>Socio</th><th>Hora</th><th>Recepción</th></tr></thead>
+        <tbody>
+          {% for a in page %}
+          <tr>
+            <td data-label="Socio"><a class="person" href="{% url 'member_detail' a.member_id %}"><span class="avatar">{{ a.member.initials }}</span><span>{{ a.member }}<small>{{ a.member.code }}</small></span></a></td>
+            <td data-label="Hora">{{ a.checked_in_at|date:'H:i' }}</td>
+            <td data-label="Recepción">{{ a.created_by.username }}</td>
+          </tr>
+          {% empty %}
+          <tr><td colspan="3" class="empty">No hay entradas para esta fecha.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% include 'gym/pagination.html' %}
+  </section>
+</div>
+{% endblock %}

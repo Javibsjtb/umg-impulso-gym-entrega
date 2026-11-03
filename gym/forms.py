@@ -45,6 +45,10 @@ class CheckInForm(forms.Form):
     code = forms.CharField(label='Código del socio', max_length=16, widget=forms.TextInput(attrs={'autofocus': True, 'placeholder': 'Ej. IG-001', 'autocomplete': 'off'}))
 
 
+class AttendanceDateForm(forms.Form):
+    date = forms.DateField(label='Fecha de asistencia', widget=forms.DateInput(attrs={'type': 'date'}, format='%Y-%m-%d'))
+
+
 class ReasonForm(forms.Form):
     reason = forms.CharField(label='Motivo', min_length=5, max_length=240, widget=forms.Textarea(attrs={'rows': 3}))
 
